@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: "Weave stories together",
 };
 
-export default function RootLayout({
+export default function WrieLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
