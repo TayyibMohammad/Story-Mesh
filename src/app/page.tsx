@@ -1,5 +1,6 @@
 import ExplainCards from "~/components/explainCards";
 import ExplainCardsProps  from "~/components/explainCardsProps";
+import Link from "next/link";
 
 export default function Home() {
 
@@ -24,7 +25,9 @@ export default function Home() {
       <div className="flex shadow-md items-center justify-between h-[50vh]">
         <img src="/pen.svg" alt="" className="h-[50vh] m-5"/>
 
-        <button className="bg-amber-400 p-2 border-black border-2">Write a story!</button>
+        <Link href='/write'>
+          <button className="bg-amber-400 p-2 border-black border-2">Write a story!</button>
+        </Link>
        
         <article className="w-[30vw] font-serif inline-block">
       

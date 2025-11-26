@@ -1,4 +1,4 @@
-
+import Link from "next/link"
 export default function Write() {
     return (
         <div className="flex flex-col items-center">
@@ -37,8 +37,9 @@ export default function Write() {
                     <input type="checkbox" /> 
                 </div>
             </div>
-
-            <button className="border-black border-2 p-2 bg-red-800 rounded-lg text-white">Start writing</button>
+            <Link href='/write/12'>
+                <button className="border-black border-2 p-2 bg-red-800 rounded-lg text-white">Start writing</button>
+            </Link>
 
         </div>
     )
