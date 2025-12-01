@@ -38,6 +38,6 @@ export default function Footer() {
                   <SocialsCard {... leetcode}/>
                   <SocialsCard {... x}/>
                 </div>
-              </footer>
+        </footer>
     )
 }
