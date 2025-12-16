@@ -2,12 +2,15 @@ import {use} from "react";
 
 import StoriesDetailsProps from "~/components/storiesDetailProp";
 import StoriesDetails from "~/components/storiesDetail";
+import axios from "axios";
 
 interface StoryProps {
   params: Promise<{
     id: string;
   }>;
 }
+
+
 
 // replace with actual api call.
 const initialData: StoriesDetailsProps[] = [
@@ -37,13 +40,25 @@ const initialData: StoriesDetailsProps[] = [
     }
 ];
 
-export default function({params}: StoryProps){
-    return (
-    <div>
-        {
-            initialData.map((story) => story.id === Number(use(params).id) && <StoriesDetails {... story}></StoriesDetails> )
-        }
-    </div>
+export default async function({params}: StoryProps){
 
-    )
+    const id = use(params);
+
+    try{
+        const storyDataPromise= await axios.get<StoriesDetailsProps>('api/story/' + id);
+        const storyData: StoriesDetailsProps = storyDataPromise.data;
+        return (
+        <div>
+            <StoriesDetails {... storyData}></StoriesDetails>
+        </div>
+
+        )
+
+    }catch(e){
+        console.error("Error fetching story data:", e);
+        return <div>Error loading story.</div>;
+    }
+    
+
+    
 }

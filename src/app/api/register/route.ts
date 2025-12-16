@@ -1,4 +1,4 @@
-import prisma from '../../../../lib/db.config'
+import prisma from '../../../../lib/prisma'
 import * as bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken'
@@ -8,7 +8,7 @@ import {serialize}  from 'cookie'
 const SALT_ROUNDS = 10;
 
 export async function POST(request: Request){
-    console.log("Registering user...");
+    console.log(" XXXXXXXXXXXXXXXXXXXXXX Registering user... XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n\n");
     const body = await request.json();
     const {name, email, password, bio} = body;
     console.log(name, email, password, bio);
@@ -63,6 +63,6 @@ export async function POST(request: Request){
         return response;
     }
     catch(e){
-        return NextResponse.json({error: 'Something went wrong'}, {status: 500})
+        return NextResponse.json({error: 'Something went wrong ', e}, {status: 500})
     }
 }

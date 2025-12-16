@@ -38,8 +38,9 @@ export default function AuthForm({ isSignIn }: { isSignIn: boolean }) {
         let finalLogMessage = ''; 
 
         try {
-            console.log(10000)
+            console.log(10001)
             const res = await axios.post('/api/register', data);
+            console.log(20000)
             console.log(res);
             const successMsg = res.data.message || 'Registration successful!';
             setMessage(successMsg);
@@ -49,6 +50,7 @@ export default function AuthForm({ isSignIn }: { isSignIn: boolean }) {
             // router.push('/dashboard'); 
             
         } catch (error: unknown) {
+            console.log(30000)
             setIsError(true);
             let errorMsg = 'An unexpected error occurred.';
             

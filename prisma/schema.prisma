@@ -11,17 +11,89 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  password    String
+  bio         String?
+
+  // --- SOCIAL RELATIONS (Many-to-Many Self-Relation) ---
+  // The 'UserFollows' relation defines the join table for following.
+  following   User[]    @relation("UserFollows") // Users this user follows
+  followers   User[]    @relation("UserFollows") // Users who follow this user
+
+  // --- AVATAR RELATIONS (One-to-One) ---
+  avatarImg   Image? // A user can have at most ONE avatar image.
+
+  // --- STORY RELATIONS (One-to-Many & Many-to-Many) ---
+  stories     Story[] // Stories AUTHORED by this user (One-to-Many)
+
+  // Explicitly define the relation names without custom references
+  // to let Prisma manage the many-to-many join table.
+  contributions Story[] @relation("StoryContributors") // Stories this user CONTRIBUTED to
+  liked         Story[] @relation("UserLikes") // Stories liked by this user
+
+  // --- COMMENT RELATIONS (One-to-Many) ---
+  comments    Comment[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  content     String
+
+  // One-to-Many: Author (One) to Comments (Many)
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    Int
+
+  // One-to-Many: Story (One) to Comments (Many)
+  story       Story     @relation(fields: [storyId], references: [id])
+  storyId     Int
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 
-model user {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
-  bio String?
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Story {
+  id          Int        @id @default(autoincrement())
+  title       String
+  content     String
+
+  // One-to-Many: Author (One) to Stories (Many)
+  author      User       @relation(fields: [authorId], references: [id])
+  authorId    Int
+
+  // --- MANY-TO-MANY RELATIONS ---
+  // Matches the relations defined in the User model.
+  liked         User[]    @relation("UserLikes") // Users who liked this story
+  contributors  User[]    @relation("StoryContributors") // Users who contributed to this story
+  canContribute Boolean   @default(false)
+  category      String
+  fiction       Boolean       @default(false)
+  nsfw          Boolean       @default(false)
+  // One-to-Many: Story (One) to Comments (Many)
+  comments    Comment[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Image {
+  id          Int       @id @default(autoincrement())
+
+  url         String    @unique
+  altText     String?
+
+  // STRICT ONE-TO-ONE
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      Int?      @unique // Enforces One-to-One: A non-null userId can only appear once
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
