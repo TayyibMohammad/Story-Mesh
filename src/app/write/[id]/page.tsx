@@ -18,6 +18,8 @@ export default function WriteIdStory({ params }: PageProps) {
     `# Story ID: ${id}\n\n## Start Your Story Here\n\nThis is **bold** text and this is *italic* text.\n\n- Use lists\n- To organize ideas\n\n\`\`\`javascript\nconst hello = "world";\n\`\`\`\n\n---`
   );
 
+
+
   const htmlPreview = useMemo(() => {
     const rawHtml = marked.parse(markdown, {
       gfm: true,
@@ -27,6 +29,26 @@ export default function WriteIdStory({ params }: PageProps) {
     const sanitizedHtml = DOMPurify.sanitize(rawHtml);
     return sanitizedHtml;
   }, [markdown]);
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(`/api/story/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ markdown }),
+      });
+
+      if (response.ok) {
+        console.log("Story updated successfully!");
+      } else {
+        console.error("Failed to update story.");
+      }
+    } catch (error) {
+      console.error("Error updating story:", error);
+    }
+  };
 
   return (
     <div className="flex gap-4 p-8">
@@ -51,7 +73,9 @@ export default function WriteIdStory({ params }: PageProps) {
             dangerouslySetInnerHTML={{ __html: htmlPreview }} 
             />
         </div>
-        <button className="border-black border-2 p-2 bg-red-800 rounded-lg text-white">Save</button>
+        <button 
+        onClick={handleSubmit}
+        className="border-black border-2 p-2 bg-red-800 rounded-lg text-white">Save</button>
       </div>
     </div>
   );
